@@ -31,37 +31,17 @@ app.use(async (ctx, next) => {
     return await next();
   }
 
-  const headers = {
-    "Access-Control-Allow-Origin": "*",
-  }; //сервер может быть вызван из любого источника
-  if (ctx.request.method !== "OPTIONS") {
-    ctx.response.set({
-      ...headers,
-    });
-    try {
-      return await next();
-    } catch (e) {
-      e.headers = {
-        ...e.headers,
-        ...headers,
-      };
-      throw e;
-    }
-  }
-  if (ctx.request.get("Access-Control-Request-Method")) {
-    ctx.response.set({
-      ...headers,
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH",
-    });
-    if (ctx.request.get("Access-Control-Request-Headers")) {
-      ctx.response.set(
-        "Access-Control-Allow-Headers",
-        ctx.request.get("Access-Control-Allow-Request-Headers")
-      );
-    }
-    ctx.response.status = 204; // No content
-  }
+  // => CORS
+  app.use(
+    cors({
+      origin: "*",
+      "Access-Control-Allow-Origin": true,
+      "X-Requested-With": true, //возможно это поможет
+      allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    })
+  );
 });
+
 const fakeData = new newsGenerator();
 fakeData.start();
 
