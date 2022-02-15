@@ -7,12 +7,15 @@ const router = new Router();
 
 const newsGenerator = require("./src/data/newsGenerator");
 
-
 const app = new Koa();
 const PORT = process.env.PORT || 8080;
 const server = http.createServer(app.callback());
 
-app.use(cors());
+app.use(
+  slow({
+    delay: 5000,
+  })
+);
 
 app.use(
   koaBody({
@@ -26,23 +29,15 @@ app.use(
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.use(async (ctx, next) => {
-  const origin = ctx.request.get("Origin");
-  if (!origin) {
-    return await next();
-  }
+// => CORS
+app.use(
+  cors({
+    origin: "*",
+    "Access-Control-Allow-Origin": true,
+    allowMethods: ["GET"],
+  })
+);
 
-  // => CORS
-  app.use(
-    cors({
-      origin: "*",
-      "Access-Control-Allow-Origin": true,
-      "X-Requested-With": true, //возможно это поможет
-      allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    })
-  );
-
-  
 const fakeData = new newsGenerator();
 fakeData.start();
 
