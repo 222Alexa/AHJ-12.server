@@ -11,11 +11,7 @@ const app = new Koa();
 const PORT = process.env.PORT || 8080;
 const server = http.createServer(app.callback());
 
-app.use(
-  slow({
-    delay: 5000,
-  })
-);
+app.use(cors());
 
 app.use(
   koaBody({
@@ -29,15 +25,43 @@ app.use(
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-// => CORS
-app.use(
-  cors({
-    origin: "*",
-    "Access-Control-Allow-Origin": true,
-    allowMethods: ["GET"],
-  })
-);
+app.use(async (ctx, next) => {
+  const origin = ctx.request.get("Origin");
+  if (!origin) {
+    return await next();
+  }
 
+  const headers = {
+    "Access-Control-Allow-Origin": "*",
+  }; //сервер может быть вызван из любого источника
+  if (ctx.request.method !== "OPTIONS") {
+    ctx.response.set({
+      ...headers,
+    });
+    try {
+      return await next();
+    } catch (e) {
+      e.headers = {
+        ...e.headers,
+        ...headers,
+      };
+      throw e;
+    }
+  }
+  if (ctx.request.get("Access-Control-Request-Method")) {
+    ctx.response.set({
+      ...headers,
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH",
+    });
+    if (ctx.request.get("Access-Control-Request-Headers")) {
+      ctx.response.set(
+        "Access-Control-Allow-Headers",
+        ctx.request.get("Access-Control-Allow-Request-Headers")
+      );
+    }
+    ctx.response.status = 204; // No content
+  }
+});
 const fakeData = new newsGenerator();
 fakeData.start();
 
