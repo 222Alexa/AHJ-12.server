@@ -1,0 +1,42 @@
+{
+  "name": "ahj-12.server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server",
+    "start:dev": "nodemon server",
+    "lint": " eslint . --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/222Alexa/AHJ-12.server.git"
+  },
+  "author": "222Alexa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/222Alexa/AHJ-12.server/issues"
+  },
+  "homepage": "https://github.com/222Alexa/AHJ-12.server#readme",
+  "dependencies": {
+    "@koa/cors": "^3.1.0",
+    "fs": "*",
+    "js-image-generator": "^1.0.3",
+    "koa": "^2.13.4",
+    "koa-body": "^4.2.0",
+    "koa-router": "^10.1.1",
+    "nodemon": "^2.0.15",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/eslint-plugin": "^7.14.5",
+    "@babel/preset-env": "^7.16.4",
+    "@faker-js/faker": "*",
+    "babel-loader": "^8.2.3",
+    "eslint": "^8.4.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-prettier": "^4.0.0"
+  }
+}
